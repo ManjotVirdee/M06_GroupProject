@@ -15,11 +15,11 @@ raw_data_folder=$project_folder'DmagnaSamples_subset/'
 fastqc_folder=$project_folder"FastQC"
 	mkdir -p $fastqc_folder
 fastqc_rawdata=$project_folder"FastQC/raw_data"
-	mkdir -p $fastqc_raw_data
+	mkdir -p $fastqc_rawdata
 fastqc_trimgalore=$project_folder"FastQC/TrimGalore_data"
 	mkdir -p $fastqc_trimgalore
 fastqc_trimmomatic=$project_folder"FastQC/Trimmomatic_data"
-	mkdir -p $project_trimmomatic
+	mkdir -p $fastqc_trimmomatic
 trimgalore_data=$project_folder"TrimGalore_data/"
 	mkdir -p $trimgalore_data
 trimmomatic_data=$project_folder"Trimmomatic_data/"
