@@ -22,7 +22,7 @@ raw_data_folder=$project_folder'DmagnaSamples_subset/'
 export Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_genomic.fna'
 
 	# Software commands
-bwa index -a bwtsw $Dmagna_reference  # bwtsw for large genomes
+# bwa index -a bwtsw $Dmagna_reference  # bwtsw for large genomes
 
 
 
@@ -41,9 +41,9 @@ do
 	export fastq_file_forward="$( echo $fastq_forward | sed -e 's/\/rds\/projects\/2017\/orsinil-bioinfoproj\/VariantCall_analysis\/DmagnaSamples_subset\///')" 
 		# Dmagna1-0_1-L002-R1.fastq.gz
 	export fastq_file_reverse="$( echo $fastq_file_forward | sed -e 's/-R1.fastq.gz/-R2.fastq.gz/')" 
-		# Dmagna1-0_1-L002-R2.fastq.gz
-	export fastq_base= "$( echo $fastq_file_forward | sed -e 's/-L00[0-9]-R[1-2].fastq.gz//')"
-		# Dmagna1-0_1 
+		# Dmagna1-0_1-L002-R2.fastq.gz	
+	export fastq_base="${fastq_file_forward%%-*}"
+		# Dmagna1
 		echo $fastq_forward
 		echo $fastq_reverse
 		echo $fastq_file_forward
