@@ -34,53 +34,85 @@ do
 ### Run Picard SortSam on merged files to re-sort the reads 
 		
 		# Initilise variables and folders 
-	sortsam_folder=$project_folder"Picard_SortSam"
-	mkdir -p $sortsam_folder
-	export sortsam_output=$sortsam_folder$base_name'.SortSam.bam'
-
+	ss_folder=$project_folder"Picard_SortSam/"
+	mkdir -p $ss_folder
+	export ss_output=$ss_folder$base_name'.SortSam.bam'
 
 		# Software commands
-	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$sortsam_output
-	# The option "VALIDATION STRINGENCY=SILENT" is not present in the software --help
+	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
+
+
+### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
+		
+		# Initilise variables and folders 
+	doc_folder=$project_folder"DepthOfCoverage/"
+	doc_ss_folder=$doc_folder"SortSam_files"
+	mkdir -p $doc_folder
+	mkdir -p $doc_ss_folder
+	export doc_ss_output=$doc_ss_folder$base_name
+
+		# Software commands
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $sortsam_output -o $doc_ss_output
+
 
 
 ### Run Picard MarkDuplicate on SortSam files to remove eventual PCR duplicate reads 
 		
 		# Initilise variables and folders 
-	markduplicates_folder=$project_folder"Picard_MarkDuplicates"
+	md_folder=$project_folder"Picard_MarkDuplicates/"
 	mkdir -p $markduplicates_folder
-	export markduplicates_output=$markduplicates_folder$base_name'MarkDuplicates.bam'
-	export markduplicates_metrics=$markduplicates_folder$base_name'MarkDuplicates.txt'
+	export md_output=$md_folder$base_name'MarkDuplicates.bam'
+	export md_metrics=$md_folder$base_name'MarkDuplicates.txt'
 
 		# Software commands
-	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$sortsam_output O=$markduplicates_output M=$markduplicates_metrics REMOVE_SEQUENCING_DUPLICATES=true 
+	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true VALIDATION STRINGENCY=SILENT 
 
 
 ### Run GATK RealignerTargetCreator on Markduplicate files to define intervals to target for local realignment
 		
 		# Initilise variables and folders 
-	rtl_folder=$project_folder"GATK_RealignerTargetCreator"
+	rtl_folder=$project_folder"GATK_RealignerTargetCreator/"
 	mkdir -p $rtl_folder
 	export rtl_output=$rtl_folder$base_name'RealignerTargetCreator.intervals'
 
 		# Software commands
 	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $markduplicates_output -o $rtl_output
-	#  What is the option -L <limiting interval> ? 
 
 
 ### Run GATK IndelRealigner on Markduplicate files using the intevals defined by RealignerTargetCreator perform local realignment of reads around indels
 		
 		# Initilise variables and folders 
-	indelrealigner_folder=$project_folder"GATK_IndelRealigner"
-	mkdir -p $indelrealigner_folder
-	export indelrealigner_output=$indelrealigner_folder$base_name'realigned.bam'
+	ir_folder=$project_folder"GATK_IndelRealigner/"
+	mkdir -p $ir_folder
+	export ir_output=$ir_folder$base_name'realigned.bam'
 
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $markduplicates_output -targetIntervals $rtl_output -o $indelrealigner_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $markduplicates_output -targetIntervals $rtl_output -o $ir_output
 	
 
-done
+### Run GATK DepthOfCoverage to asses sequence coverage of IndelRealigner files  
+		
+		# Initilise variables and folders 
+	doc_ir_folder=$doc_folder"IndelRealigner_files/"
+	mkdir -p $doc_ir_folder
+	export doc_ir_output=$doc_ir_folder$base_name
 
+		# Software commands
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ir_output -o $doc_ir_output
+
+
+### Run Samtools mpileup on GATK IndelRealigner files
+		
+		# Initilise variables and folders 
+	mpileup_folder=$project_folder"mpileup/"
+	mkdir -p $mpileup_folder
+	export mpileup_output=$mpileup_folder$base_name'.vcf.gz'
+
+		# Software commands
+	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
+
+
+done
 
 
 
