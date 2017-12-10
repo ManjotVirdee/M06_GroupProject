@@ -4,11 +4,11 @@
 ##### This script take each merged bam file and perform InDel realignment and 
 
 ### MODULE TO LOAD
-   module load apps/picard/2.10.5-java-1.8.0_92    
-   module load apps/gatk/v3.6
+#   module load apps/picard/2.10.5-java-1.8.0_92    
+#   module load apps/gatk/v3.6
 
 ### VARIABLES FOLDERS
-merged_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/Merged_bam_files'
+merged_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/Merged_bam_files/'
 project_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/'
 Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_genomic.fna'
 
@@ -16,7 +16,7 @@ Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_gen
 # In order to follow all the variable substitutions, one example for each variable is added as a comment.
 # All the "echo" commands are used to debug the script.
 
-for merged_file in $project_folder*"sorted.bam"   # All the files that end with "sorted.bam" in the Merged_bam_files folder  
+for merged_file in $merged_folder*"sorted.bam"   # All the files that end with "sorted.bam" in the Merged_bam_files folder  
 do
 
 ### List of the merged file
@@ -39,14 +39,15 @@ do
 	export ss_output=$ss_folder$base_name'.SortSam.bam'
 
 		# Software commands
-	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
-
+	#java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
+	# corrected
+	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output SORT_ORDER=coordinate 
 
 ### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
 		
 		# Initilise variables and folders 
 	doc_folder=$project_folder"DepthOfCoverage/"
-	doc_ss_folder=$doc_folder"SortSam_files"
+	doc_ss_folder=$doc_folder"SortSam_files/"
 	mkdir -p $doc_folder
 	mkdir -p $doc_ss_folder
 	export doc_ss_output=$doc_ss_folder$base_name
