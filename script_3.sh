@@ -47,7 +47,7 @@ do
 	# not working
 	# java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
 	# corrected
-#	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
+	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
 	
 ### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
@@ -66,7 +66,7 @@ do
 		echo $Dmagna_reference
 		
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
 	
 
 ### Run Picard MarkDuplicate on SortSam files to remove eventual PCR duplicate reads 
@@ -77,11 +77,8 @@ do
 	export md_output=$md_folder$base_name'MarkDuplicates.bam'
 	export md_metrics=$md_folder$base_name'MarkDuplicates.txt'
 
-		# Software commands
-	# not working
+		# Software commands 
 	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true VALIDATION_STRINGENCY=SILENT 
-	# corrected	
-	# java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true 
 
 
 ### Run GATK RealignerTargetCreator on Markduplicate files to define intervals to target for local realignment
