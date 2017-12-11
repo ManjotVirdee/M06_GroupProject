@@ -47,7 +47,7 @@ do
 	# not working
 	# java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
 	# corrected
-	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
+#	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
 	
 ### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
@@ -66,7 +66,7 @@ do
 		echo $Dmagna_reference
 		
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
+#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
 	
 
 ### Run Picard MarkDuplicate on SortSam files to remove eventual PCR duplicate reads 
@@ -77,8 +77,10 @@ do
 	export md_output=$md_folder$base_name'MarkDuplicates.bam'
 	export md_metrics=$md_folder$base_name'MarkDuplicates.txt'
 
+		echo $ss_output
+
 		# Software commands 
-	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true VALIDATION_STRINGENCY=SILENT 
+#	java -jar $EBROOTPICARD/picard.jar MarkDuplicates I=$ss_output O=$md_output M=$md_metrics ASSUME_SORT_ORDER=coordinate REMOVE_SEQUENCING_DUPLICATES=true VALIDATION_STRINGENCY=SILENT 
 
 
 ### Run GATK RealignerTargetCreator on Markduplicate files to define intervals to target for local realignment
@@ -89,7 +91,7 @@ do
 	export rtl_output=$rtl_folder$base_name'RealignerTargetCreator.intervals'
 
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $markduplicates_output -o $rtl_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $ss_output -o $rtl_output
 
 
 ### Run GATK IndelRealigner on Markduplicate files using the intevals defined by RealignerTargetCreator perform local realignment of reads around indels
@@ -100,7 +102,7 @@ do
 	export ir_output=$ir_folder$base_name'realigned.bam'
 
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $markduplicates_output -targetIntervals $rtl_output -o $ir_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $ss_output -targetIntervals $rtl_output -o $ir_output
 	
 
 ### Run GATK DepthOfCoverage to asses sequence coverage of IndelRealigner files  
@@ -122,7 +124,7 @@ do
 	export mpileup_output=$mpileup_folder$base_name'.vcf.gz'
 
 		# Software commands
-#	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
+	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
 
 
 done
