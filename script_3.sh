@@ -12,6 +12,11 @@ merged_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/Merge
 project_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/'
 Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_genomic.fna'
 
+
+### CREATE REFERENCE DICTIONARY
+# java -jar $EBROOTPICARD/picard.jar CreateSequenceDictionary R=$Dmagna_reference O=$Dmagna_reference'.dict'
+
+
 #### ANALYSE EACH FILE
 # In order to follow all the variable substitutions, one example for each variable is added as a comment.
 # All the "echo" commands are used to debug the script.
@@ -19,7 +24,7 @@ Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_gen
 for merged_file in $merged_folder*"sorted.bam"   # All the files that end with "sorted.bam" in the Merged_bam_files folder  
 do
 
-### List of the merged file
+#### List of the merged file
 	export merged_file 
 		#  /rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/Merged_bam_files/Dmagna-0_1.sorted.bam
 	export temp_name="$( echo $merged_file | sed -e 's/\/rds\/projects\/2017\/orsinil-bioinfoproj\/VariantCall_analysis\/Merged_bam_files\///')" 
@@ -39,10 +44,12 @@ do
 	export ss_output=$ss_folder$base_name'.SortSam.bam'
 
 		# Software commands
-	#java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
+	# not working
+	# java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
 	# corrected
-	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output SORT_ORDER=coordinate 
+#	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
+	
 ### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
 		
 		# Initilise variables and folders 
@@ -52,21 +59,29 @@ do
 	mkdir -p $doc_ss_folder
 	export doc_ss_output=$doc_ss_folder$base_name
 
+		echo ""	
+		echo $doc_folder
+		echo $doc_ss_folder
+		echo $doc_ss_output
+		echo $Dmagna_reference
+		
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $sortsam_output -o $doc_ss_output
-
-
+#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
+	
 
 ### Run Picard MarkDuplicate on SortSam files to remove eventual PCR duplicate reads 
 		
 		# Initilise variables and folders 
 	md_folder=$project_folder"Picard_MarkDuplicates/"
-	mkdir -p $markduplicates_folder
+	mkdir -p $md_folder
 	export md_output=$md_folder$base_name'MarkDuplicates.bam'
 	export md_metrics=$md_folder$base_name'MarkDuplicates.txt'
 
 		# Software commands
-	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true VALIDATION STRINGENCY=SILENT 
+	# not working
+	java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true VALIDATION_STRINGENCY=SILENT 
+	# corrected	
+	# java -jar $EBROOTPICARD/picard.jar MarkDuplicates  I=$ss_output O=$md_output M=$md_metrics REMOVE_SEQUENCING_DUPLICATES=true 
 
 
 ### Run GATK RealignerTargetCreator on Markduplicate files to define intervals to target for local realignment
@@ -77,7 +92,7 @@ do
 	export rtl_output=$rtl_folder$base_name'RealignerTargetCreator.intervals'
 
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $markduplicates_output -o $rtl_output
+#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $markduplicates_output -o $rtl_output
 
 
 ### Run GATK IndelRealigner on Markduplicate files using the intevals defined by RealignerTargetCreator perform local realignment of reads around indels
@@ -88,7 +103,7 @@ do
 	export ir_output=$ir_folder$base_name'realigned.bam'
 
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $markduplicates_output -targetIntervals $rtl_output -o $ir_output
+#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $markduplicates_output -targetIntervals $rtl_output -o $ir_output
 	
 
 ### Run GATK DepthOfCoverage to asses sequence coverage of IndelRealigner files  
@@ -99,7 +114,7 @@ do
 	export doc_ir_output=$doc_ir_folder$base_name
 
 		# Software commands
-	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ir_output -o $doc_ir_output
+#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ir_output -o $doc_ir_output
 
 
 ### Run Samtools mpileup on GATK IndelRealigner files
@@ -110,7 +125,7 @@ do
 	export mpileup_output=$mpileup_folder$base_name'.vcf.gz'
 
 		# Software commands
-	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
+#	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
 
 
 done
