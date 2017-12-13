@@ -99,6 +99,7 @@ do
 		# Software commands
 	bwa mem $Dmagna_reference $trimmed_output"_1P" $trimmed_output"_2P" | samtools view -bh | samtools sort > $bwa_output
 
+	# I should have added the option -M to Mark shorter split hits as secondary (for Picard compatibility)
 
 done
 
