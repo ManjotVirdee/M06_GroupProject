@@ -37,7 +37,7 @@ Read group was assigned to each replicate using the Picard tool (http://broadins
 
 ## Script 3: Post-mapping Analysis and Variant Calling 
 A reference dictionary was created using the Picard tool CreateSequenceDictionary and SortSam was used on merged bam files to sort the reads and create new indexes. Additionally, removal of PCR duplicate generated during library constructions was performed using the Picard tool MarkDuplicate.
-Before calling variants using SAMtools mpileup (Li, 2013), local realignment of reads around indels was carried out with the Genome Analysis ToolKit (McKenna et al.,2010) RealignerTargetCreator and IndelRealigner. Ultimately, variants were filtered using BCFtools filter (https://samtools.github.io/bcftools/)
+Before calling variants using SAMtools mpileup (Li, 2013), local realignment of reads around indels was carried out with the Genome Analysis ToolKit (McKenna et al.,2010) RealignerTargetCreator and IndelRealigner. Ultimately, variants were filtered using BCFtools filter (https://samtools.github.io/bcftools/).
 
 
 *SortSam settings*
