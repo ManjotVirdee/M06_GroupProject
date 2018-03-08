@@ -4,18 +4,17 @@
 ##### This script take each merged bam file and perform InDel realignment and 
 
 ### MODULE TO LOAD
-#   module load apps/picard/2.10.5-java-1.8.0_92    
-#   module load apps/gatk/v3.6
+module purge; module load bluebear
+module load apps/picard/2.10.5-java-1.8.0_92    
+module load apps/gatk/v3.6
 
 ### VARIABLES FOLDERS
 merged_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/Merged_bam_files/'
 project_folder='/rds/projects/2017/orsinil-bioinfoproj/VariantCall_analysis/'
 Dmagna_reference=$project_folder'reference_genome/GCA_001632505.1_daphmag2.4_genomic.fna'
 
-
 ### CREATE REFERENCE DICTIONARY
-# java -jar $EBROOTPICARD/picard.jar CreateSequenceDictionary R=$Dmagna_reference O=$Dmagna_reference'.dict'
-
+java -jar $EBROOTPICARD/picard.jar CreateSequenceDictionary R=$Dmagna_reference O=$Dmagna_reference'.dict'
 
 #### ANALYSE EACH FILE
 # In order to follow all the variable substitutions, one example for each variable is added as a comment.
@@ -44,10 +43,7 @@ do
 	export ss_output=$ss_folder$base_name'.SortSam.bam'
 
 		# Software commands
-	# not working
-	# java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION STRINGENCY=SILENT 
-	# corrected
-#	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
+	java -jar $EBROOTPICARD/picard.jar SortSam I=$merged_file O=$ss_output VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
 	
 ### Run GATK DepthOfCoverage to asses sequence coverage of SortSam files  
@@ -66,7 +62,7 @@ do
 		echo $Dmagna_reference
 		
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ss_output -o $doc_ss_output
 	
 
 ### Run Picard MarkDuplicate on SortSam files to remove eventual PCR duplicate reads 
@@ -74,7 +70,7 @@ do
 		# Initilise variables and folders 
 	md_folder=$project_folder"Picard_MarkDuplicates/"
 	mkdir -p $md_folder
-	#mkdir -p $md_folder"temp"
+	mkdir -p $md_folder"temp"
 	export md_output=$md_folder$base_name'MarkDuplicates.bam'
 	export md_metrics=$md_folder$base_name'MarkDuplicates.txt'
 
@@ -92,7 +88,7 @@ do
 	export rtl_output=$rtl_folder$base_name'RealignerTargetCreator.intervals'
 
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $ss_output -o $rtl_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T RealignerTargetCreator -R $Dmagna_reference -I $ss_output -o $rtl_output
 
 
 ### Run GATK IndelRealigner on Markduplicate files using the intevals defined by RealignerTargetCreator perform local realignment of reads around indels
@@ -103,7 +99,7 @@ do
 	export ir_output=$ir_folder$base_name'realigned.bam'
 
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $ss_output -targetIntervals $rtl_output -o $ir_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T IndelRealigner -R $Dmagna_reference -I $ss_output -targetIntervals $rtl_output -o $ir_output
 	
 
 ### Run GATK DepthOfCoverage to asses sequence coverage of IndelRealigner files  
@@ -114,7 +110,7 @@ do
 	export doc_ir_output=$doc_ir_folder$base_name
 
 		# Software commands
-#	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ir_output -o $doc_ir_output
+	java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar -T DepthOfCoverage -R $Dmagna_reference -I $ir_output -o $doc_ir_output
 
 
 ### Run Samtools mpileup on GATK IndelRealigner files
@@ -125,7 +121,19 @@ do
 	export mpileup_output=$mpileup_folder$base_name'.vcf.gz'
 
 		# Software commands
-#	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
+	samtools mpileup -f $Dmagna_reference $ir_output -v > $mpileup_output
+
+
+
+### Run bcftools to filter low quality variants
+		
+		# Initilise variables and folders 
+	filtVcf_folder=$project_folder"filtVcf/"
+	mkdir -p $filtVcf_folder
+	export filtVcf_output=$filtVcf_folder$base_name'_filt.vcf.gz'
+
+		# Software commands
+	bcftools filter -i 'MIN(DP)>10 && QUAL>30 && AVG(GQ)>50' -Ov $mpileup_output > $filtVcf_output
 
 
 done
