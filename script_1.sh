@@ -5,10 +5,11 @@
 
 
 ### MODULE TO LOAD
-#   module load apps/fastqc/v0.11.2  
-#   module load apps/trimmomatic
-#   module load apps/samtools
-#   module load apps/BWA
+module purge; module load bluebear
+module load apps/fastqc/v0.11.2  
+module load apps/trimmomatic
+module load apps/samtools
+module load apps/BWA
 
 
 ### VARIABLES FOLDERS
