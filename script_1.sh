@@ -73,7 +73,7 @@ do
 	export adapter_fasta=$project_folder"TruSeq3-PE-2.fa"
 
 		# Software commands
-	trimmomatic PE $fastq_forward $fastq_reverse -baseout $trimmed_output CROP:225 ILLUMINACLIP:$adapter_fasta:2:30:10 LEADING:10 TRAILING:10 SLIDINGWINDOW:50:20 MINLEN:36
+	trimmomatic PE $fastq_forward $fastq_reverse -baseout $trimmed_output ILLUMINACLIP:$adapter_fasta:2:30:10 LEADING:30 TRAILING:30 MINLEN:50
 	
 
 ### Run FastQC of Trimmomatic data
@@ -97,9 +97,8 @@ do
 	export bwa_output=$bwa_data$fastq_base".sorted.bam"
 
 		# Software commands
-	bwa mem $Dmagna_reference $trimmed_output"_1P" $trimmed_output"_2P" | samtools view -bh | samtools sort > $bwa_output
+	bwa mem -M $Dmagna_reference $trimmed_output"_1P" $trimmed_output"_2P" | samtools view -bh | samtools sort > $bwa_output
 
-	# I should have added the option -M to Mark shorter split hits as secondary (for Picard compatibility)
 
 done
 
