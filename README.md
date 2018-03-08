@@ -1,7 +1,7 @@
-#### D. magna Variant Call Analysis
+# <i>Daphnia magna</i> Variant Call Analysis
 The variant call analysis was performed using the D. magna reference genome GCA_001632505.1 and the raw sequences of the D. magna samples listed below. Data analysis was performed using three bash scripts for: (i) quality control and alignment, (ii) read group assignment and bam file merging, and (iii) post-mapping analysis and variant calling.  
 
-## File list:
+### File list:
 Dmagna1-0_1-L002-R1.fastq.gz
 Dmagna1-0_1-L002-R2.fastq.gz
 Dmagna12-6_2-L002-R1.fastq.gz
@@ -21,7 +21,7 @@ Dmagna72-6_2-L002-R2.fastq.gz
 Dmagna79-9_20-L002-R1.fastq.gz
 Dmagna79-9_20-L002-R2.fastq.gz
 
-#### Script 1: Quality Control and Alignment
+### Script 1: Quality Control and Alignment
 Raw data quality control using FastQC and MultiQC
 Failed tests: Sequence Quality Histograms (11/18); Per Sequence GC Content (18/18); Adapter Content (17/18)
 
@@ -58,7 +58,7 @@ CROP:235 ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW
 Failed MultiQC tests: Per Sequence GC Content (18/18)
 
 
-### Script 2: Read Group and File Merging
+## Script 2: Read Group and File Merging
 Read group was assigned to each replicate using Picard AddOrReplaceReadGroups
 Read group identifier: unique replicate name (e.g. Dmagna1) . 
 DNA preparation library identifier: the same as the platform number assuming that all the libraries in the same lane were prepared together 
@@ -68,11 +68,11 @@ Sample: sample name (e.g. Dmagna0_1)
 
 The three replicates were merged using Picard MergeSamFiles 
 
-## Other software tested
+### Other software tested
 Samtools merge was also tested, and discarded because it does not reconstruct the @RG dictionary in the header. 
 
 
-### Script 3: Post-mapping Analysis and Variant Calling 
+## Script 3: Post-mapping Analysis and Variant Calling 
 A reference dictionary was created using Picard CreateSequenceDictionary 
 
 Picard SortSam was used on merged bam files to sort the reads and create new indexes.
