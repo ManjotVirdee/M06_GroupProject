@@ -22,7 +22,18 @@ Variant call analysis was performed using the <i>D. magna</i> reference genome G
 * Dmagna79-9_20-L002-R2.fastq.gz
 
 ## Script 1: Quality Control and Alignment
-Raw data quality control using FastQC and MultiQC
+Raw data quality control was performed using Trimmomatic (Bolger et al., 2014) and FastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+*Trimmomatic settings*
+* ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10 
+* LEADING:30 
+* TRAILING:30 
+* MINLEN:50 
+
+
+
+
+using FastQC and MultiQC
 Failed tests: Sequence Quality Histograms (11/18); Per Sequence GC Content (18/18); Adapter Content (17/18)
 
 Raw data quality filtering using Trimmomatic
