@@ -41,25 +41,29 @@ Before calling variants using SAMtools mpileup (Li, 2013), local realignment of 
 
 
 *SortSam settings*
-*SORT_ORDER=coordinate
-*CREATE_INDEX=true
-*VALIDATION_STRINGENCY=SILENT 	
+* SORT_ORDER=coordinate
+* CREATE_INDEX=true
+* VALIDATION_STRINGENCY=SILENT 	
 
 *MarkDuplicate settings*
-*ASSUME_SORT_ORDER=coordinate
-*REMOVE_SEQUENCING_DUPLICATES=true
-*VALIDATION_STRINGENCY=SILENT 
+* ASSUME_SORT_ORDER=coordinate
+* REMOVE_SEQUENCING_DUPLICATES=true
+* VALIDATION_STRINGENCY=SILENT 
 
 *BCFtools filter settings*
-*-i 'MIN(DP)>10 && QUAL>30 && AVG(GQ)>50'
+* -i 'MIN(DP)>10 && QUAL>30 && AVG(GQ)>50'
 
 
 ## References
-Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: a flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114-2120.
-Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer, N., ... & Durbin, R. (2009). The sequence alignment/map format and SAMtools. Bioinformatics, 25(16), 2078-2079.
-Li, H. (2011). A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics, 27(21), 2987-2993.
-Li, H. (2013). Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM. arXiv preprint arXiv:1303.3997.
-McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., ... & DePristo, M. A. (2010). The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. Genome research, 20(9), 1297-1303.
+* Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: a flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114-2120.
+
+* Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer, N., ... & Durbin, R. (2009). The sequence alignment/map format and SAMtools. Bioinformatics, 25(16), 2078-2079.
+
+* Li, H. (2011). A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics, 27(21), 2987-2993.
+
+* Li, H. (2013). Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM. arXiv preprint arXiv:1303.3997.
+
+* McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., ... & DePristo, M. A. (2010). The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. Genome research, 20(9), 1297-1303.
 
 
 
