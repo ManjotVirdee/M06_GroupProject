@@ -10,5 +10,4 @@ Masters in Bioinformatics Programme
 * Renee Lizzy
 * Manjot Virdee
 
-### Description
 
