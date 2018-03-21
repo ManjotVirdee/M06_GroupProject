@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author:
+# Gian Marco Baranzoni and Renee Taylor
+
 ##### PART 1 
 ##### Quality control and aligment of Daphina magna genomes in the "DmagnaSamples_subset" directory
 
