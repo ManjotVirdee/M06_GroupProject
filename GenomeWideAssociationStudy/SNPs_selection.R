@@ -1,3 +1,6 @@
+# Author:
+# Gian Marco Baranzoni
+
 ###### GENE LIST MANIPULATIONS
 ### Libraries to load
 library(tidyverse)
