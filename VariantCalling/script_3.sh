@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author:
+# Gian Marco Baranzoni and Manjot Virdee
+
 ##### PART 3 
 ##### This script take each merged bam file and perform InDel realignment and 
 
