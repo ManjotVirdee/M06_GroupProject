@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author:
+# Gian Marco Baranzoni and Renee Taylor
+
 ##### PART 2 
 ##### This script take the three technical replicates in a sorted bam format and merge them in a single file.
 
