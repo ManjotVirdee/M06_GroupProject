@@ -1,4 +1,7 @@
 #!bin/bash
+
+Authors:
+Gian Marco Baranzoni and Manjot Virdee
  
 project_folder='/rds/projects/2017/orsinil-bioinfoproj/'
 vcf_file_orig=$project_folder'Dmagna_30_individuals_SNPs.vcf.gz'
