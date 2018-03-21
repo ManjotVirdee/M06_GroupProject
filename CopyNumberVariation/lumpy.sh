@@ -1,6 +1,8 @@
 #!/bin/bash
 
-		
+# Author:
+# Gian Marco Baranzoni
+
 #SBATCH --time 8-10:0
 #SBATCH --qos colboujk
 #SBATCH --ntasks 5
