@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Author:
+# Gian Marco Baranzoni
+
 module load apps/trimmomatic/v0.32
 module load apps/fastqc/v0.11.2
 
