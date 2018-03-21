@@ -1,5 +1,8 @@
 ### VariantAnnotation - Server ###
 
+# Author:
+# Gian Marco Baranzoni
+
 ### Libraries
 library(VariantAnnotation)
 library(GenomicFeatures)
