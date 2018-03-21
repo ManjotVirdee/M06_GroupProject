@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Author:
+# Authors:
 # Gian Marco Baranzoni and Manjot Virdee
 
 ##### PART 3 
