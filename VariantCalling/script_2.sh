@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Author:
+# Authors:
 # Gian Marco Baranzoni and Renee Taylor
 
 ##### PART 2 
